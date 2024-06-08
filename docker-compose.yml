@@ -1,0 +1,28 @@
+version: "3"
+services:
+  loadbalancer:
+    build: ./loadbalancer # Path to the Dockerfile
+    image: imagenamea
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    container_name: Loadbalancer
+    ports:
+      - "80:5000" # Exposing port to host
+    privileged: true # This should be true to share the docker daemon
+    environment:
+      - PYTHONUNBUFFERED=1
+  
+  server:
+    build: ./server
+    image: master_flask_copy
+    volumes:
+      - ./server:/app
+    container_name: origin
+    ports:
+      - 5001:5001
+    environment:
+      port: 5001
+      ID: 1
+    stdin_open: true
+    tty: true
+
